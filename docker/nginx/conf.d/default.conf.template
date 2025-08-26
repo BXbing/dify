@@ -4,45 +4,57 @@ server {
     listen ${NGINX_PORT};
     server_name ${NGINX_SERVER_NAME};
 
-    location /console/api {
+    location /dify/console/api {
       proxy_pass http://api:5001;
       include proxy.conf;
+      proxy_set_header X-Forwarded-Prefix /dify;
+      rewrite ^/dify/(.*)$ /$1 break;
     }
 
-    location /api {
+    location /dify/api {
       proxy_pass http://api:5001;
       include proxy.conf;
+      proxy_set_header X-Forwarded-Prefix /dify;
+      rewrite ^/dify/(.*)$ /$1 break;
     }
 
-    location /v1 {
+    location /dify/v1 {
       proxy_pass http://api:5001;
       include proxy.conf;
+      proxy_set_header X-Forwarded-Prefix /dify;
+      rewrite ^/dify/(.*)$ /$1 break;
     }
 
-    location /files {
+    location /dify/files {
       proxy_pass http://api:5001;
       include proxy.conf;
+      proxy_set_header X-Forwarded-Prefix /dify;
+      rewrite ^/dify/(.*)$ /$1 break;
     }
 
-    location /explore {
+    location /dify/explore {
       proxy_pass http://web:3000;
       include proxy.conf;
     }
 
-    location /e/ {
+    location /dify/e/ {
       proxy_pass http://plugin_daemon:5002;
       proxy_set_header Dify-Hook-Url $scheme://$host$request_uri;
+      proxy_set_header X-Forwarded-Prefix /dify;
+      rewrite ^/dify/(.*)$ /$1 break;
       include proxy.conf;
     }
 
-    location / {
+    location /dify/ {
       proxy_pass http://web:3000;
       include proxy.conf;
     }
-    location /mcp {
+    location /dify/mcp {
       proxy_pass http://api:5001;
       include proxy.conf;
-    }
+      proxy_set_header X-Forwarded-Prefix /dify;
+      rewrite ^/dify/(.*)$ /$1 break;
+   }
     # placeholder for acme challenge location
     ${ACME_CHALLENGE_LOCATION}
 
